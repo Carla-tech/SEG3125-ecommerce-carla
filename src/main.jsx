@@ -10,7 +10,7 @@ const products = [
     type: 'Dresses',
     price: 68,
     sale: true,
-    size: ['XS', 'S', 'M', 'L'],
+    size: ['XS', 'S', 'M', 'L', 'XL'],
     color: 'Pink',
     material: 'Satin',
     image: '/products/blush-satin-wrap-dress.svg',
@@ -25,7 +25,7 @@ const products = [
     type: 'Tops',
     price: 34,
     sale: false,
-    size: ['S', 'M', 'L', 'XL'],
+    size: ['XS', 'S', 'M', 'L', 'XL'],
     color: 'Cream',
     material: 'Cotton Blend',
     image: '/products/everyday-ribbed-knit-top.svg',
@@ -40,7 +40,7 @@ const products = [
     type: 'Lips',
     price: 18,
     sale: true,
-    size: ['One Size'],
+    size: ['50 ml', '100 ml'],
     color: 'Rose',
     material: 'Gloss Finish',
     image: '/products/rose-glow-lip-oil.svg',
@@ -70,7 +70,7 @@ const products = [
     type: 'Face',
     price: 32,
     sale: false,
-    size: ['Light', 'Medium', 'Tan', 'Deep'],
+    size: ['50 ml', '100 ml'],
     color: 'Neutral',
     material: 'Dewy Finish',
     image: '/products/dewy-skin-tint.svg',
@@ -85,7 +85,7 @@ const products = [
     type: 'Fragrance',
     price: 24,
     sale: true,
-    size: ['100 ml'],
+    size: ['50 ml', '100 ml'],
     color: 'Vanilla',
     material: 'Warm Scent',
     image: '/products/vanilla-cloud-body-mist.svg',
@@ -100,7 +100,7 @@ const products = [
     type: 'Tops',
     price: 49,
     sale: false,
-    size: ['S', 'M', 'L'],
+    size: ['XS', 'S', 'M', 'L', 'XL'],
     color: 'White',
     material: 'Knit',
     image: '/products/pearl-button-cardigan.svg',
@@ -130,7 +130,7 @@ const products = [
     type: 'Bottoms',
     price: 52,
     sale: true,
-    size: ['XS', 'S', 'M', 'L'],
+    size: ['XS', 'S', 'M', 'L', 'XL'],
     color: 'Champagne',
     material: 'Satin',
     image: '/products/champagne-satin-skirt.svg',
@@ -145,7 +145,7 @@ const products = [
     type: 'Brows',
     price: 16,
     sale: false,
-    size: ['Clear', 'Soft Brown'],
+    size: ['50 ml', '100 ml'],
     color: 'Clear',
     material: 'Natural Finish',
     image: '/products/clean-girl-brow-gel.svg',
@@ -160,7 +160,7 @@ const products = [
     type: 'Dresses',
     price: 62,
     sale: false,
-    size: ['S', 'M', 'L'],
+    size: ['XS', 'S', 'M', 'L', 'XL'],
     color: 'Blue',
     material: 'Denim',
     image: '/products/weekend-denim-mini-dress.svg',
@@ -175,7 +175,7 @@ const products = [
     type: 'Hair',
     price: 28,
     sale: true,
-    size: ['250 ml'],
+    size: ['50 ml', '100 ml'],
     color: 'Coconut',
     material: 'Cream Formula',
     image: '/products/coconut-repair-hair-mask.svg',
@@ -188,7 +188,7 @@ const products = [
 const allFilters = {
   category: ['Clothing', 'Beauty'],
   type: ['Dresses', 'Tops', 'Bottoms', 'Face', 'Lips', 'Hair', 'Brows', 'Fragrance'],
-  size: ['XS', 'S', 'M', 'L', 'XL', 'One Size', '100 ml', '250 ml', 'Light', 'Medium', 'Tan', 'Deep', 'Clear', 'Soft Brown'],
+  size: ['XS', 'S', 'M', 'L', 'XL', 'One Size', '50 ml', '100 ml'],
   color: ['Pink', 'Cream', 'Rose', 'Black', 'Neutral', 'Vanilla', 'White', 'Berry', 'Champagne', 'Clear', 'Blue', 'Coconut'],
   material: ['Satin', 'Cotton Blend', 'Gloss Finish', 'Crepe', 'Dewy Finish', 'Warm Scent', 'Knit', 'Velvet Finish', 'Natural Finish', 'Denim', 'Cream Formula']
 };
@@ -203,6 +203,21 @@ function App() {
   const [customer, setCustomer] = useState({ name: '', email: '', address: '', city: '', card: '', expiry: '' });
   const [survey, setSurvey] = useState({ rating: '5', comment: '', submitted: false });
   const [language, setLanguage] = useState('EN');
+  const [selectedOptions, setSelectedOptions] = useState({});
+
+  function getOptionLabel(product) {
+    if (product.category === 'Clothing') return 'Clothing size';
+    if (product.size.includes('50 ml')) return 'Product volume';
+    return 'Size / shade';
+  }
+
+  function getSelectedOption(product) {
+    return selectedOptions[product.id] || product.size[0];
+  }
+
+  function updateSelectedOption(productId, value) {
+    setSelectedOptions((prev) => ({ ...prev, [productId]: value }));
+  }
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -230,19 +245,20 @@ function App() {
     }));
   }
 
-  function addToCart(product) {
+  function addToCart(product, selectedOption = product.size[0]) {
+    const cartKey = `${product.id}-${selectedOption}`;
     setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
+      const existing = prev.find((item) => item.cartKey === cartKey);
       if (existing) {
-        return prev.map((item) => (item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item));
+        return prev.map((item) => (item.cartKey === cartKey ? { ...item, quantity: item.quantity + 1 } : item));
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, selectedOption, cartKey, quantity: 1 }];
     });
   }
 
-  function changeQuantity(productId, amount) {
+  function changeQuantity(cartKey, amount) {
     setCart((prev) => prev
-      .map((item) => (item.id === productId ? { ...item, quantity: Math.max(0, item.quantity + amount) } : item))
+      .map((item) => (item.cartKey === cartKey ? { ...item, quantity: Math.max(0, item.quantity + amount) } : item))
       .filter((item) => item.quantity > 0));
   }
 
@@ -349,8 +365,18 @@ function App() {
                       <span>${product.price.toFixed(2)} CAD</span>
                       <span>{product.color}</span>
                     </div>
+                    <label className="option-selector" htmlFor={`product-option-${product.id}`}>
+                      {getOptionLabel(product)}
+                      <select
+                        id={`product-option-${product.id}`}
+                        value={getSelectedOption(product)}
+                        onChange={(event) => updateSelectedOption(product.id, event.target.value)}
+                      >
+                        {product.size.map((option) => <option key={option} value={option}>{option}</option>)}
+                      </select>
+                    </label>
                     <div className="card-actions">
-                      <button className="primary-button small" onClick={() => addToCart(product)}>Add to bag</button>
+                      <button className="primary-button small" onClick={() => addToCart(product, getSelectedOption(product))}>Add to bag</button>
                       <button className="secondary-button small" onClick={() => setSelectedProduct(product)}>Details</button>
                     </div>
                   </div>
@@ -440,7 +466,17 @@ function App() {
                 {selectedProduct.details.map((detail) => <li key={detail}>{detail}</li>)}
               </ul>
               <p><strong>${selectedProduct.price.toFixed(2)} CAD</strong></p>
-              <button className="primary-button" onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}>Add to bag</button>
+              <label className="option-selector modal-option" htmlFor={`modal-option-${selectedProduct.id}`}>
+                {getOptionLabel(selectedProduct)}
+                <select
+                  id={`modal-option-${selectedProduct.id}`}
+                  value={getSelectedOption(selectedProduct)}
+                  onChange={(event) => updateSelectedOption(selectedProduct.id, event.target.value)}
+                >
+                  {selectedProduct.size.map((option) => <option key={option} value={option}>{option}</option>)}
+                </select>
+              </label>
+              <button className="primary-button" onClick={() => { addToCart(selectedProduct, getSelectedOption(selectedProduct)); setSelectedProduct(null); }}>Add to bag</button>
             </div>
           </div>
         </div>
@@ -483,16 +519,17 @@ function CartStep({ cart, changeQuantity, total }) {
     <div>
       <h3>Step 1: Review your bag</h3>
       {cart.length === 0 ? <p>Your bag is empty. Add a product before continuing.</p> : cart.map((item) => (
-        <div className="cart-row" key={item.id}>
+        <div className="cart-row" key={item.cartKey}>
           <span className="cart-icon"><img className="cart-image" src={item.image} alt="" aria-hidden="true" /></span>
           <div>
             <strong>{item.name}</strong>
+            <p>{item.category === 'Clothing' ? 'Size' : item.size.includes('50 ml') ? 'Volume' : 'Option'}: {item.selectedOption}</p>
             <p>${item.price.toFixed(2)} CAD</p>
           </div>
           <div className="quantity-controls">
-            <button onClick={() => changeQuantity(item.id, -1)} aria-label={`Decrease ${item.name}`}>-</button>
+            <button onClick={() => changeQuantity(item.cartKey, -1)} aria-label={`Decrease ${item.name}`}>-</button>
             <span>{item.quantity}</span>
-            <button onClick={() => changeQuantity(item.id, 1)} aria-label={`Increase ${item.name}`}>+</button>
+            <button onClick={() => changeQuantity(item.cartKey, 1)} aria-label={`Increase ${item.name}`}>+</button>
           </div>
         </div>
       ))}

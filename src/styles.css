@@ -656,3 +656,27 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
     grid-column: 1 / -1;
   }
 }
+
+.option-selector {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.8rem 0 0.9rem;
+  color: var(--rose-dark);
+  font-weight: 900;
+  font-size: 0.82rem;
+}
+
+.option-selector select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0.7rem 0.85rem;
+  font-weight: 800;
+}
+
+.modal-option {
+  max-width: 240px;
+  margin-bottom: 1rem;
+}
