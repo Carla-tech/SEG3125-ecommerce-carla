@@ -13,7 +13,8 @@ const products = [
     size: ['XS', 'S', 'M', 'L'],
     color: 'Pink',
     material: 'Satin',
-    image: '👗',
+    image: '/products/blush-satin-wrap-dress.svg',
+    imageAlt: 'Pink satin wrap dress illustration',
     description: 'A soft satin wrap dress designed for dinners, birthdays, and polished evenings.',
     details: ['Adjustable waist tie', 'Midi length', 'Soft drape fabric']
   },
@@ -27,7 +28,8 @@ const products = [
     size: ['S', 'M', 'L', 'XL'],
     color: 'Cream',
     material: 'Cotton Blend',
-    image: '🤍',
+    image: '/products/everyday-ribbed-knit-top.svg',
+    imageAlt: 'Cream ribbed knit top illustration',
     description: 'A versatile ribbed top that pairs easily with denim, skirts, or tailored pants.',
     details: ['Stretchy rib texture', 'Breathable cotton blend', 'Regular fit']
   },
@@ -41,7 +43,8 @@ const products = [
     size: ['One Size'],
     color: 'Rose',
     material: 'Gloss Finish',
-    image: '💄',
+    image: '/products/rose-glow-lip-oil.svg',
+    imageAlt: 'Rose lip oil tube illustration',
     description: 'A hydrating lip oil with a subtle rose tint and glossy finish.',
     details: ['Non-sticky shine', 'Light rose tint', 'Pocket-friendly size']
   },
@@ -55,7 +58,8 @@ const products = [
     size: ['XS', 'S', 'M', 'L', 'XL'],
     color: 'Black',
     material: 'Crepe',
-    image: '🖤',
+    image: '/products/soft-tailored-wide-leg-pants.svg',
+    imageAlt: 'Black wide-leg pants illustration',
     description: 'Wide-leg pants with a smooth tailored look for work, events, and everyday styling.',
     details: ['High waist', 'Wide-leg silhouette', 'Polished crepe fabric']
   },
@@ -69,7 +73,8 @@ const products = [
     size: ['Light', 'Medium', 'Tan', 'Deep'],
     color: 'Neutral',
     material: 'Dewy Finish',
-    image: '✨',
+    image: '/products/dewy-skin-tint.svg',
+    imageAlt: 'Dewy skin tint bottle illustration',
     description: 'A lightweight skin tint for a fresh, hydrated, everyday glow.',
     details: ['Light coverage', 'Dewy finish', 'Comfortable daily wear']
   },
@@ -83,7 +88,8 @@ const products = [
     size: ['100 ml'],
     color: 'Vanilla',
     material: 'Warm Scent',
-    image: '🌸',
+    image: '/products/vanilla-cloud-body-mist.svg',
+    imageAlt: 'Vanilla body mist bottle illustration',
     description: 'A soft vanilla body mist with warm floral notes for everyday use.',
     details: ['Warm vanilla scent', 'Easy spray bottle', 'Light and wearable']
   },
@@ -97,7 +103,8 @@ const products = [
     size: ['S', 'M', 'L'],
     color: 'White',
     material: 'Knit',
-    image: '🧶',
+    image: '/products/pearl-button-cardigan.svg',
+    imageAlt: 'White pearl button cardigan illustration',
     description: 'A feminine cardigan with pearl-style buttons and a comfortable knit texture.',
     details: ['Pearl-style buttons', 'Soft knit feel', 'Layering piece']
   },
@@ -111,7 +118,8 @@ const products = [
     size: ['One Size'],
     color: 'Berry',
     material: 'Velvet Finish',
-    image: '🍓',
+    image: '/products/berry-velvet-blush.svg',
+    imageAlt: 'Berry blush compact illustration',
     description: 'A buildable berry blush with a smooth velvet finish.',
     details: ['Blendable color', 'Velvet finish', 'Compact packaging']
   },
@@ -125,7 +133,8 @@ const products = [
     size: ['XS', 'S', 'M', 'L'],
     color: 'Champagne',
     material: 'Satin',
-    image: '🥂',
+    image: '/products/champagne-satin-skirt.svg',
+    imageAlt: 'Champagne satin skirt illustration',
     description: 'A satin skirt with an elegant shine that works for day-to-night outfits.',
     details: ['Midi length', 'Soft elastic waist', 'Light satin sheen']
   },
@@ -139,7 +148,8 @@ const products = [
     size: ['Clear', 'Soft Brown'],
     color: 'Clear',
     material: 'Natural Finish',
-    image: '🪄',
+    image: '/products/clean-girl-brow-gel.svg',
+    imageAlt: 'Clear brow gel tube illustration',
     description: 'A lightweight brow gel that shapes brows without a heavy feeling.',
     details: ['Flexible hold', 'Clear finish option', 'Small precision brush']
   },
@@ -153,7 +163,8 @@ const products = [
     size: ['S', 'M', 'L'],
     color: 'Blue',
     material: 'Denim',
-    image: '👖',
+    image: '/products/weekend-denim-mini-dress.svg',
+    imageAlt: 'Blue denim mini dress illustration',
     description: 'A casual denim mini dress made for easy weekend outfits.',
     details: ['Structured denim', 'Button-front detail', 'Casual fit']
   },
@@ -167,7 +178,8 @@ const products = [
     size: ['250 ml'],
     color: 'Coconut',
     material: 'Cream Formula',
-    image: '🥥',
+    image: '/products/coconut-repair-hair-mask.svg',
+    imageAlt: 'Coconut hair mask jar illustration',
     description: 'A creamy hair mask designed to make dry hair feel softer and smoother.',
     details: ['Cream texture', 'Coconut scent', 'Weekly treatment']
   }
@@ -327,7 +339,7 @@ function App() {
                 <article className="product-card" key={product.id}>
                   {product.sale && <span className="sale-badge">Sale</span>}
                   <button className="image-button" onClick={() => setSelectedProduct(product)} aria-label={`View details for ${product.name}`}>
-                    <span>{product.image}</span>
+                    <img className="product-image" src={product.image} alt={product.imageAlt} />
                   </button>
                   <div className="product-info">
                     <p className="product-type">{product.category} · {product.type}</p>
@@ -419,7 +431,7 @@ function App() {
         <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="product-title">
           <div className="product-modal">
             <button className="modal-close" onClick={() => setSelectedProduct(null)} aria-label="Close details">×</button>
-            <div className="modal-image">{selectedProduct.image}</div>
+            <div className="modal-image"><img className="modal-product-image" src={selectedProduct.image} alt={selectedProduct.imageAlt} /></div>
             <div>
               <p className="eyebrow">Product details</p>
               <h2 id="product-title">{selectedProduct.name}</h2>
@@ -472,7 +484,7 @@ function CartStep({ cart, changeQuantity, total }) {
       <h3>Step 1: Review your bag</h3>
       {cart.length === 0 ? <p>Your bag is empty. Add a product before continuing.</p> : cart.map((item) => (
         <div className="cart-row" key={item.id}>
-          <span className="cart-icon">{item.image}</span>
+          <span className="cart-icon"><img className="cart-image" src={item.image} alt="" aria-hidden="true" /></span>
           <div>
             <strong>{item.name}</strong>
             <p>${item.price.toFixed(2)} CAD</p>
